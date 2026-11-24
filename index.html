@@ -1,0 +1,1231 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipo’s Spanish Adventure · 皮波的西语探险</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #30251d;
+    --muted: #68564b;
+    --paper: #fffdf7;
+    --cream: #fff4db;
+    --line: #ead9bc;
+    --orange: #ffbc72;
+    --plum: #582e4d;
+    --mint: #d9efd9;
+    --shadow: 0 5px 0 #ead9bc;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(circle at top right, #ffd9ae, transparent 34rem), var(--cream);
+    color: var(--ink);
+    font-family: ui-rounded, "Trebuchet MS", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.5;
+  }
+  [hidden] { display: none !important; }
+  button, select, input { font: inherit; color: inherit; }
+  button, select, input[type="text"], input[type="file"], .download {
+    min-height: 46px;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    padding: .6rem .85rem;
+  }
+  button, .download { cursor: pointer; font-weight: 750; }
+  button:disabled { cursor: default; opacity: .55; }
+  button:not(:disabled):active, .download:active { transform: translateY(2px); }
+  :focus-visible { outline: 3px solid #854d83; outline-offset: 3px; }
+  h1, h2, h3, p { margin: 0 0 .65rem; }
+  h1 { font-size: clamp(2rem, 6vw, 4rem); line-height: 1.04; letter-spacing: -.045em; }
+  h2 { font-size: clamp(1.35rem, 4vw, 1.9rem); }
+  h3 { font-size: 1.1rem; }
+  small, .muted { color: var(--muted); }
+  a { color: var(--plum); }
+  .wrap { width: min(1080px, calc(100% - 24px)); margin: 1rem auto 3rem; }
+  .card {
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 23px;
+    padding: clamp(.85rem, 3vw, 1.5rem);
+    box-shadow: var(--shadow);
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr minmax(95px, 23%);
+    align-items: center;
+    gap: .65rem;
+    background: linear-gradient(120deg, #fff8e9, #ffc982);
+    padding: clamp(1rem, 4vw, 2.2rem);
+  }
+  .hero svg { width: 100%; filter: drop-shadow(0 6px 0 #b16a3e33); }
+  .hero-zh { font-size: clamp(1.05rem, 3vw, 1.4rem); font-weight: 800; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; }
+  .spread { justify-content: space-between; }
+  .passport, .unit-nav, .steps, .lesson, .settings { margin-top: 1rem; }
+  .meter { display: block; width: 100%; height: 16px; accent-color: #536d42; margin: .35rem 0 .6rem; }
+  .badge, .pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: .28rem .7rem;
+    background: var(--mint);
+    font-weight: 750;
+  }
+  .unit-nav, .steps { display: grid; gap: .5rem; }
+  .unit-nav { grid-template-columns: repeat(3, 1fr); }
+  .steps { grid-template-columns: repeat(5, 1fr); }
+  .unit-nav button, .steps button { text-align: left; }
+  .unit-nav small, .steps small { display: block; }
+  [aria-pressed="true"], .primary { background: var(--plum); border-color: var(--plum); color: white; }
+  [aria-pressed="true"] small { color: #ffedf7; }
+  .settings { padding: .65rem .85rem; background: #fff8eb; }
+  .settings select, .source input { max-width: 100%; }
+  .settings .voice { flex: 1 1 270px; }
+  .flash {
+    display: grid;
+    width: 100%;
+    padding: 0;
+    margin: .55rem 0;
+    border: 0;
+    background: transparent;
+    perspective: 1100px;
+    text-align: center;
+  }
+  .flip-inner {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform .48s cubic-bezier(.2,.65,.22,1);
+  }
+  .flash[aria-expanded="true"] .flip-inner { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: .45rem;
+    min-height: 240px;
+    padding: 1rem;
+    border: 2px solid #f4ca91;
+    border-radius: 22px;
+    backface-visibility: hidden;
+    background: #fff0ce;
+  }
+  .face.back { transform: rotateY(180deg); background: #e3f3de; border-color: #bfd9b8; }
+  .illustration { font-size: 3.3rem; line-height: 1.1; }
+  .spanish { font-size: clamp(1.35rem, 5vw, 2.45rem); }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin: .8rem 0; }
+  .choices button { min-height: 80px; }
+  .choices .icon { display: block; font-size: 1.6rem; }
+  .choices .correct { background: var(--mint); border-color: #74a16d; opacity: 1; }
+  .shake { animation: shake .34s ease-in-out; }
+  .pop { animation: pop .45s cubic-bezier(.2,.8,.3,1.4); }
+  @keyframes shake { 25% { transform: translateX(-5px); } 65% { transform: translateX(5px); } }
+  @keyframes pop { 45% { transform: scale(1.13); } }
+  .feedback { min-height: 1.5em; margin: .55rem 0; color: var(--plum); font-weight: 750; }
+  .tray {
+    min-height: 68px;
+    border: 2px dashed #b58b68;
+    border-radius: 15px;
+    background: #fff4dc;
+    padding: .5rem;
+    margin: .55rem 0;
+  }
+  .bank { margin: .65rem 0; }
+  .demo { background: #ffe7bf; border-radius: 18px; padding: 1rem; }
+  .source { margin: .75rem 0; }
+  .source > label { width: 100%; }
+  .source input { flex: 1 1 240px; min-width: 0; }
+  .lyrics { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .45rem; }
+  .lyrics button { display: block; width: 100%; text-align: left; }
+  .lyrics small { display: block; font-weight: 500; }
+  video, iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 16px; background: #322634; }
+  .video-frame { max-width: 700px; margin: .75rem 0; }
+  .upload { margin: .8rem 0; padding: .75rem; border: 2px dashed var(--line); border-radius: 16px; }
+  .upload.drag { background: var(--mint); }
+  .upload input { width: 100%; margin-top: .45rem; }
+  .download { display: inline-flex; align-items: center; }
+  .studio-label { display: block; font-weight: 750; }
+  details { margin-top: .65rem; }
+  summary { cursor: pointer; }
+  @media (max-width: 620px) {
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .unit-nav { grid-template-columns: 1fr; }
+    .unit-nav small { display: inline; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001s !important; transition-duration: .001s !important; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero card">
+    <div>
+      <h1>Pipo’s Spanish<br>Adventure</h1>
+      <p class="hero-zh" lang="zh-Hans">皮波的西语探险</p>
+      <p><strong lang="es">¡Hola, explorador!</strong> Ready to play? <span lang="zh-Hans">小探险家，准备好了吗？</span></p>
+    </div>
+    <svg viewBox="0 0 200 190" role="img" aria-label="Pipo the puppy in an orange scarf · 戴橙色围巾的小狗皮波">
+      <path fill="#fff7e8" d="M151 34c-7-9-1-19 7-17 6 1 8 7 7 11l16 7c4-4 10-3 13 1 4 7-1 13-8 13-3 7-12 7-16 1l-16-7c-7 4-13-1-12-7 1-4 5-5 9-2Z"/>
+      <path fill="#ef9955" stroke="#512e29" stroke-width="5" d="M61 154q-11 10-12 30h102q-1-20-12-30Z"/>
+      <path fill="#984e36" stroke="#512e29" stroke-width="5" d="M54 53C34 36 10 60 13 107c2 19 18 26 32 10l14-45m87-19c20-17 44 7 41 54-2 19-18 26-32 10l-14-45"/>
+      <path fill="#f4ad63" stroke="#512e29" stroke-width="5" d="M100 38c-38 0-59 28-59 65 0 32 24 55 59 55s59-23 59-55c0-37-21-65-59-65Z"/>
+      <path fill="#fff3d7" d="M100 96c-17-16-46 0-46 19 0 20 19 31 46 31s46-11 46-31c0-19-29-35-46-19Z"/>
+      <ellipse cx="75" cy="88" rx="6" ry="8" fill="#512e29"/>
+      <ellipse cx="125" cy="88" rx="6" ry="8" fill="#512e29"/>
+      <path fill="#512e29" d="M89 108q11-7 22 0 3 6-11 15-14-9-11-15Z"/>
+      <path d="M100 121q0 11-13 8m13-8q0 11 13 8" fill="none" stroke="#512e29" stroke-width="3" stroke-linecap="round"/>
+      <path d="M57 145q43 18 86 0l3 15q-19 8-39 8l15 15-21-2-9-13q-19 0-37-8Z" fill="#ec6d49" stroke="#512e29" stroke-width="4" stroke-linejoin="round"/>
+    </svg>
+  </header>
+
+  <section class="passport card" aria-labelledby="passport-title">
+    <div class="row spread">
+      <h2 id="passport-title">🐾 Adventure passport · 探险护照</h2>
+      <div class="row">
+        <span class="pill" id="stars">⭐ 0 Stars · 星星</span>
+        <button type="button" id="reset">Reset progress · 重置进度</button>
+      </div>
+    </div>
+    <p id="progress-text"></p>
+    <progress class="meter" id="progress" aria-labelledby="progress-text" value="0" max="9"></progress>
+    <div class="row" id="badges" aria-label="Badges · 徽章"></div>
+    <p class="feedback" id="passport-status" role="status"></p>
+  </section>
+
+  <nav class="unit-nav" id="units" aria-label="Units · 主题单元"></nav>
+  <nav class="steps" id="steps" aria-label="Learning activities · 学习活动"></nav>
+
+  <div class="settings card row">
+    <label class="voice" for="voice">🔊 Spanish voice · 西语语音
+      <select id="voice"></select>
+    </label>
+    <button type="button" id="speed" aria-pressed="false">🐌 Snail speed · 蜗牛慢速</button>
+    <small id="voice-status" role="status"></small>
+  </div>
+
+  <section class="lesson card" id="lesson" aria-labelledby="activity-title"></section>
+</main>
+
+<script>
+"use strict";
+
+// Add units here. Each vocab row holds Spanish, English, Chinese, icon,
+// Spanish example, and a bilingual pronunciation tip.
+const units = [
+  {
+    id: "about", icon: "👋", en: "About Me & Phonics", zh: "自我介绍与超能力拼读",
+    vocab: [
+      ["¡Hola!", "Hello!", "你好！", "👋", "¡Hola, Pipo!", "H is silent · h 不发音"],
+      ["¿Qué tal?", "How are you?", "最近怎样？", "😊", "¡Hola! ¿Qué tal?", "qu before e sounds like k · que 中的 qu 发 k 音"],
+      ["Me llamo…", "My name is…", "我叫……", "🏷️", "Me llamo Pipo.", "ll often sounds like y in yes · ll 在许多地区发类似英语 yes 开头的音"],
+      ["Tengo diez años", "I am 10 years old", "我十岁了", "🎂", "Tengo diez años. ¿Y tú?", "ñ sounds like ny in canyon · ñ 类似 canyon 中的 ny 音"],
+      ["Vivo en Vietnam", "I live in Vietnam", "我住在越南", "🏡", "Hola, vivo en Vietnam.", "Spanish v sounds like Spanish b · 西语 v 和 b 的读音相同"],
+      ["Mi cumpleaños", "My birthday", "我的生日", "🎈", "Hoy es mi cumpleaños.", "Stress the ña syllable · 重读 ña 音节"],
+      ["Gracias", "Thank you", "谢谢", "💛", "¡Muchas gracias!", "ci sounds like see in much of Latin America · 拉美许多地区的 ci 类似 see"]
+    ],
+    // Builders use exact ordered answer tiles, followed by 1–2 distractors.
+    questions: [
+      { en: "I am ten years old.", zh: "我十岁了。", answer: ["Tengo", "diez", "años"], extras: ["Soy", "nueve"], tip: "Use tengo (I have) for your age. · 西语用 tengo（我有）表达年龄。" },
+      { en: "Hello! My name is Pipo.", zh: "你好！我叫皮波。", answer: ["¡Hola!", "Me llamo", "Pipo."], extras: ["Vivo", "Gracias."], tip: "Me llamo goes before your name. · Me llamo 放在名字前面。" },
+      { en: "My name is Pipo and I live in Vietnam.", zh: "我叫皮波，我住在越南。", answer: ["Me llamo", "Pipo", "y", "vivo en", "Vietnam."], extras: ["pero", "tengo"], tip: "Y means and. Vivo en introduces the place where you live. · y 表示「和」，vivo en 引出居住地点。" }
+    ],
+    song: {
+      // Optional starter source: ./videos/hola.mp4, a direct HTTPS video,
+      // a YouTube link, or a Vimeo player link.
+      title: "¡Hola, hola! · Hello, hello! · 你好，你好！",
+      source: "",
+      lines: [
+        ["¡Hola, hola! ¿Qué tal?", "Hello, hello! How are you?", "你好，你好！最近怎样？"],
+        ["Me llamo Pipo. ¿Y tú?", "My name is Pipo. And you?", "我叫皮波。你呢？"],
+        ["Tengo diez años, vivo en Vietnam.", "I am ten years old and I live in Vietnam.", "我十岁了，住在越南。"],
+        ["¡Gracias, amigos! ¡Hasta luego!", "Thank you, friends! See you later!", "谢谢朋友们！回头见！"]
+      ]
+    },
+    challenge: "My introduction · 我的自我介绍",
+    script: "¡Hola! Me llamo ____. Tengo ____ años. Vivo en Vietnam."
+  },
+  {
+    id: "food", icon: "🍦", en: "Food & Snacks", zh: "美食与零食点单",
+    vocab: [
+      ["el chocolate", "chocolate", "巧克力", "🍫", "Me gusta el chocolate.", "ch sounds like ch in chip · ch 类似 chip 开头的音"],
+      ["un helado", "an ice cream", "一个冰淇淋", "🍦", "Quiero un helado, por favor.", "H is silent · h 不发音"],
+      ["una pizza", "a pizza", "一份披萨", "🍕", "Quiero una pizza.", "Keep the vowels short and clear · 元音读得短而清楚"],
+      ["el agua", "water", "水", "💧", "Me gusta el agua fría.", "Stress the first a · 重读第一个 a"],
+      ["una manzana", "an apple", "一个苹果", "🍎", "Quiero una manzana.", "Stress za · 重读 za 音节"],
+      ["Me gusta…", "I like…", "我喜欢……", "😋", "Me gusta la pizza.", "gu in gusta starts with a hard g · gusta 中的 g 类似 go 开头的音"],
+      ["No me gusta…", "I don’t like…", "我不喜欢……", "🙅", "No me gusta el helado.", "Stress gus in gusta · 重读 gusta 中的 gus"],
+      ["¡Qué rico!", "How delicious!", "真好吃！", "✨", "¡Qué rico está el chocolate!", "Initial r is rolled · 词首 r 是颤音"]
+    ],
+    questions: [
+      { en: "I like chocolate.", zh: "我喜欢巧克力。", answer: ["Me gusta", "el chocolate."], extras: ["No me gusta", "la pizza."], tip: "Use me gusta with one food or a food in general. · 喜欢某一种食物时，可以用 me gusta。" },
+      { en: "I like pizza, but I don’t like ice cream.", zh: "我喜欢披萨，但是我不喜欢冰淇淋。", answer: ["Me gusta", "la pizza,", "pero", "no me gusta", "el helado."], extras: ["y", "el agua."], tip: "Pero means but. Put no before me gusta to say you don’t like something. · pero 表示「但是」，no 放在 me gusta 前面。" },
+      { en: "I like water and I like apples.", zh: "我喜欢水，也喜欢苹果。", answer: ["Me gusta", "el agua", "y", "me gustan", "las manzanas."], extras: ["pero", "no me gustan"], tip: "Y means and. Use gustan with plural las manzanas. · y 连接两句，las manzanas 是复数，所以用 gustan。" }
+    ],
+    song: {
+      title: "¡Qué rico! · So yummy! · 真好吃！", source: "",
+      lines: [
+        ["Me gusta el chocolate. ¡Qué rico!", "I like chocolate. How delicious!", "我喜欢巧克力。真好吃！"],
+        ["Me gusta la pizza y me gusta el helado.", "I like pizza and I like ice cream.", "我喜欢披萨，也喜欢冰淇淋。"],
+        ["Quiero una manzana, por favor.", "I’d like an apple, please.", "请给我一个苹果。"],
+        ["Y un vaso de agua. ¡Muchas gracias!", "And a glass of water. Thank you very much!", "再来一杯水。非常感谢！"]
+      ]
+    },
+    challenge: "My snack show · 我的零食秀",
+    script: "Me gusta ____, pero no me gusta ____. ¡Qué rico!"
+  },
+  {
+    id: "animals", icon: "🐕", en: "Animals & Colours", zh: "动物与颜色密码",
+    vocab: [
+      ["un perro", "a dog", "一只狗", "🐕", "Veo un perro negro.", "rr is a rolled r · rr 是颤音"],
+      ["un gato", "a cat", "一只猫", "🐈", "Veo un gato blanco.", "g before a is hard, like go · ga 的 g 类似 go 开头的音"],
+      ["una tortuga", "a turtle", "一只乌龟", "🐢", "Veo una tortuga grande.", "Stress tu · 重读 tu 音节"],
+      ["un pez", "a fish", "一条鱼", "🐟", "Veo un pez rojo.", "z sounds like s in much of Latin America · 拉美许多地区的 z 类似 s"],
+      ["rojo / roja", "red", "红色", "🔴", "Veo un pez rojo y una tortuga roja.", "j is a breathy or throaty h-like sound · j 类似较重的 h 气音"],
+      ["negro / negra", "black", "黑色", "⚫", "Veo un gato negro y una tortuga negra.", "Stress ne · 重读 ne 音节"],
+      ["blanco / blanca", "white", "白色", "⚪", "Veo un perro blanco y una tortuga blanca.", "Say bl together · bl 连在一起读"],
+      ["grande", "big", "大的", "🐘", "Veo un perro grande.", "Stress gran · 重读 gran 音节"]
+    ],
+    questions: [
+      { en: "A black dog.", zh: "一只黑色的狗。", answer: ["un", "perro", "negro"], extras: ["una", "negra"], tip: "Put the colour after perro. Perro is masculine, so use un and negro. · 颜色放在 perro 后面。perro 是阳性，用 un 和 negro。" },
+      { en: "A red turtle.", zh: "一只红色的乌龟。", answer: ["una", "tortuga", "roja"], extras: ["un", "rojo"], tip: "Tortuga is feminine. Match una tortuga with roja. · tortuga 是阴性，搭配 una 和 roja。" },
+      { en: "A big turtle and a white cat.", zh: "一只大乌龟和一只白猫。", answer: ["una tortuga", "grande", "y", "un gato", "blanco"], extras: ["blanca", "pero"], tip: "Grande works with either gender. With gato, use blanco. · grande 用于阴性和阳性名词时形式相同，gato 搭配 blanco。" }
+    ],
+    song: {
+      title: "Pipo y sus amigos · Pipo and friends · 皮波和朋友们", source: "",
+      lines: [
+        ["Un perro negro dice: «¡Guau, guau!»", "A black dog says, “Woof, woof!”", "一只黑狗说：「汪汪！」"],
+        ["Un gato blanco dice: «¡Miau, miau!»", "A white cat says, “Meow, meow!”", "一只白猫说：「喵喵！」"],
+        ["Una tortuga grande camina despacio.", "A big turtle walks slowly.", "一只大乌龟慢慢走。"],
+        ["Un pez rojo nada. ¡Adiós, amigos!", "A red fish swims. Goodbye, friends!", "一条红色的鱼在游泳。朋友们，再见！"]
+      ]
+    },
+    challenge: "My animal detective show · 我的动物侦探秀",
+    script: "Veo un perro ____. Veo una tortuga ____. ¡Guau, guau!"
+  }
+];
+
+const steps = [
+  ["cards", "🃏 Flashcards", "词卡"],
+  ["game", "🎧 Listening game", "听音辨词"],
+  ["builder", "🧩 Sentence builder", "造句积木"],
+  ["songs", "🎵 Songs & videos", "影音剧场"],
+  ["studio", "🎬 Video studio", "我的西语小剧场"]
+];
+
+const $ = id => document.getElementById(id);
+const storageKey = "pipo-spanish-passport-v1";
+const freshPassport = () => ({ units: {}, recordings: [], badges: [], voice: "", slow: false });
+let passport = freshPassport();
+let storageAvailable = true;
+
+try {
+  const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+  if (saved && typeof saved === "object") passport = { ...freshPassport(), ...saved };
+} catch {
+  storageAvailable = false;
+}
+
+let currentUnit = units[0];
+let currentStep = "cards";
+let disposePanel = () => {};
+let voices = [];
+let utterance;
+const synth = window.speechSynthesis;
+const lesson = $("lesson");
+
+function save() {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(passport));
+    storageAvailable = true;
+  } catch {
+    storageAvailable = false;
+  }
+  renderPassport();
+}
+
+function unitProgress(unit = currentUnit) {
+  return passport.units[unit.id] ||= { cards: [], game: [], builder: [], listened: [] };
+}
+
+function complete(unit, step) {
+  const done = passport.units[unit.id];
+  const counts = { cards: unit.vocab.length, game: unit.vocab.length, builder: unit.questions.length };
+  return Boolean(done && done[step]?.length >= counts[step]);
+}
+
+function earn(step, index, unit = currentUnit) {
+  const seen = unitProgress(unit)[step];
+  if (seen.includes(index)) return false;
+  seen.push(index);
+  save();
+  return true;
+}
+
+// Stars derive from unique learning milestones and completed recordings.
+function renderPassport() {
+  const learningSteps = ["cards", "game", "builder"];
+  const completed = units.reduce((total, unit) =>
+    total + learningSteps.filter(step => complete(unit, step)).length, 0);
+  const stars = units.reduce((total, unit) => {
+    const record = passport.units[unit.id];
+    return total + (record ? [...learningSteps, "listened"]
+      .reduce((sum, step) => sum + (record[step]?.length || 0), 0) : 0);
+  }, passport.recordings.length);
+  const badges = [
+    ["👂 Super ears · 顺风耳", units.some(unit => complete(unit, "game"))],
+    ["🧱 Word builder · 造句达人", units.some(unit => complete(unit, "builder"))],
+    ["🎬 Movie pup · 小小导演", passport.recordings.length > 0],
+    ["🏅 Spanish explorer · 西语探险家", completed === units.length * 3]
+  ];
+  passport.badges = badges.filter(([, unlocked]) => unlocked).map(([label]) => label);
+  $("stars").textContent = `⭐ ${stars} Stars · 星星`;
+  $("progress").max = units.length * 3;
+  $("progress").value = completed;
+  const unitDone = units.filter(unit => learningSteps.every(step => complete(unit, step))).length;
+  $("progress-text").textContent = `${completed}/${units.length * 3} steps · 学习步骤　${unitDone}/${units.length} units · 完成单元`;
+  $("badges").replaceChildren();
+  for (const label of passport.badges) {
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = label;
+    $("badges").append(badge);
+  }
+  if (!passport.badges.length) $("badges").textContent = "Earn badges as you explore · 探险途中可以解锁徽章";
+  $("passport-status").textContent = storageAvailable ? "" :
+    "Progress is available for this visit only. · 当前浏览器暂时只能在本次打开期间保留进度。";
+  updateNavigation();
+}
+
+// Render before saving so the freshly unlocked badge list is persisted too.
+const storePassport = save;
+save = function () {
+  renderPassport();
+  storePassport();
+};
+
+function updateNavigation() {
+  for (const button of $("units").children) {
+    button.setAttribute("aria-pressed", String(button.dataset.unit === currentUnit.id));
+    const unit = units.find(item => item.id === button.dataset.unit);
+    button.querySelector(".unit-check").textContent =
+      ["cards", "game", "builder"].every(step => complete(unit, step)) ? " ✓" : "";
+  }
+  for (const button of $("steps").children) {
+    button.setAttribute("aria-pressed", String(button.dataset.step === currentStep));
+    button.querySelector(".step-check").textContent = complete(currentUnit, button.dataset.step) ? " ✓" : "";
+  }
+}
+
+function updateVoices() {
+  const available = synth?.getVoices() || [];
+  const preference = voice => {
+    const lang = voice.lang.toLowerCase().replace("_", "-");
+    return lang === "es-es" ? 0 : lang === "es-mx" ? 1 : 2;
+  };
+  voices = available.filter(voice => /^es(?:[-_]|$)/i.test(voice.lang))
+    .sort((a, b) => preference(a) - preference(b));
+  $("voice").replaceChildren(new Option("Auto · 自动选择", ""));
+  for (const voice of voices) {
+    $("voice").append(new Option(`${voice.name} (${voice.lang})`, voice.voiceURI));
+  }
+  $("voice").value = voices.some(voice => voice.voiceURI === passport.voice) ? passport.voice : "";
+  $("voice").disabled = !voices.length;
+  $("voice-status").textContent = !synth ?
+    "Speech unavailable · 此浏览器不支持朗读" : !voices.length ?
+    "Trying the system voice · 将尝试系统语音" : "";
+}
+
+function stopSpeech() {
+  utterance = null;
+  synth?.cancel();
+}
+
+function speak(text, onStart) {
+  if (!synth || !window.SpeechSynthesisUtterance) {
+    $("voice-status").textContent = "Speech unavailable · 此浏览器不支持朗读";
+    return false;
+  }
+  stopSpeech();
+  const next = new SpeechSynthesisUtterance(text.replace(/\s*\/\s*/g, ", ").replace(/…/g, ""));
+  const voice = voices.find(item => item.voiceURI === $("voice").value) || voices[0];
+  if (voice) next.voice = voice;
+  next.lang = voice?.lang || "es-ES";
+  next.rate = passport.slow ? 0.65 : 0.95;
+  next.onstart = () => { if (utterance === next) onStart?.(); };
+  next.onerror = event => {
+    if (utterance === next && !["canceled", "interrupted"].includes(event.error)) {
+      $("voice-status").textContent = "Voice could not play. Try another voice. · 朗读暂未播放，可试试切换语音。";
+    }
+  };
+  utterance = next;
+  try {
+    synth.speak(next);
+    return true;
+  } catch {
+    $("voice-status").textContent = "Voice could not play. · 暂时无法朗读。";
+    return false;
+  }
+}
+
+function syncSpeed() {
+  $("speed").setAttribute("aria-pressed", String(passport.slow));
+  $("speed").textContent = passport.slow ? "🐌 Slow speed on · 慢速已开启" : "🐌 Snail speed · 蜗牛慢速";
+}
+
+function shuffle(items) {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function button(label, action, className = "") {
+  const element = document.createElement("button");
+  element.type = "button";
+  element.textContent = label;
+  element.className = className;
+  element.addEventListener("click", action);
+  return element;
+}
+
+function show(step, moveFocus = true) {
+  disposePanel();
+  disposePanel = () => {};
+  stopSpeech();
+  currentStep = step;
+  updateNavigation();
+  ({ cards: flashcards, game: listeningGame, builder: sentenceBuilder,
+     songs: songs, studio: videoStudio })[step](currentUnit);
+  if (moveFocus) $("activity-title").focus({ preventScroll: true });
+}
+
+// Step 1: a card counts as reviewed after the learner flips it.
+function flashcards(unit) {
+  let index = unit.vocab.findIndex((_, i) => !unitProgress(unit).cards.includes(i));
+  if (index < 0) index = 0;
+  lesson.innerHTML = `
+    <h2 id="activity-title" tabindex="-1">🃏 Flashcards · 互动词卡</h2>
+    <p>Tap the card to flip it. · 点击词卡翻面。</p>
+    <button class="flash" type="button" aria-expanded="false">
+      <span class="flip-inner">
+        <span class="face front">
+          <span class="illustration" aria-hidden="true"></span>
+          <strong class="spanish" lang="es"></strong>
+          <small class="tip"></small>
+        </span>
+        <span class="face back" aria-hidden="true">
+          <strong class="translation"></strong>
+          <span class="example" lang="es"></span>
+          <small>Example · 西语例句</small>
+        </span>
+      </span>
+    </button>
+    <div class="row spread">
+      <button id="prev-card" type="button">← Previous · 上一张</button>
+      <button id="say-card" type="button" class="primary">🔊 Listen · 听一听</button>
+      <button id="next-card" type="button">Next · 下一张 →</button>
+    </div>
+    <p class="feedback" id="card-status" role="status"></p>`;
+  const card = lesson.querySelector(".flash");
+  const front = lesson.querySelector(".front");
+  const back = lesson.querySelector(".back");
+  let flipped = false;
+
+  function updateCard() {
+    const [es, en, zh, icon, example, tip] = unit.vocab[index];
+    front.querySelector(".illustration").textContent = icon;
+    front.querySelector(".spanish").textContent = es;
+    front.querySelector(".tip").textContent = `Phonics · 拼读  ${tip}`;
+    back.querySelector(".translation").textContent = `${en} · ${zh}`;
+    back.querySelector(".example").textContent = example;
+    card.setAttribute("aria-expanded", String(flipped));
+    card.setAttribute("aria-label", flipped ?
+      `${en} · ${zh}. ${example}. Flip back · 翻回正面` :
+      `${es}. ${tip}. Flip for meaning · 翻面看释义`);
+    front.setAttribute("aria-hidden", String(flipped));
+    back.setAttribute("aria-hidden", String(!flipped));
+    $("card-status").textContent =
+      `${index + 1}/${unit.vocab.length} · ${unitProgress(unit).cards.length} reviewed · 已翻看`;
+  }
+
+  function move(offset) {
+    stopSpeech();
+    index = (index + offset + unit.vocab.length) % unit.vocab.length;
+    flipped = false;
+    updateCard();
+  }
+
+  card.onclick = () => {
+    flipped = !flipped;
+    const newStar = flipped && earn("cards", index, unit);
+    updateCard();
+    if (newStar) $("card-status").textContent += "　⭐ +1";
+  };
+  $("prev-card").onclick = () => move(-1);
+  $("next-card").onclick = () => move(1);
+  $("say-card").onclick = () => speak(unit.vocab[index][flipped ? 4 : 0]);
+  updateCard();
+}
+
+// Step 2: every word appears exactly once per round. Text clues keep the
+// same answer choices playable when a Spanish voice is unavailable.
+function listeningGame(unit) {
+  lesson.innerHTML = `
+    <h2 id="activity-title" tabindex="-1">🎧 Listening game · 听音辨词</h2>
+    <p>Listen to Spanish. Choose the matching meaning. · 听西语，选出对应的词义。</p>
+    <div class="row">
+      <button id="game-listen" type="button" class="primary">🔊 Play word · 播放词语</button>
+      <button id="game-clue" type="button" aria-expanded="false" aria-controls="clue">Show Spanish clue · 看西语提示</button>
+      <span class="pill" id="combo">🔥 Combo · 连击 0</span>
+    </div>
+    <p class="feedback" id="clue" lang="es" hidden></p>
+    <div class="choices" id="choices" aria-label="Answer choices · 答案选项"></div>
+    <p class="feedback" id="game-status" role="status"></p>
+    <button id="game-next" type="button" hidden>Next word · 下一个词 →</button>`;
+  const all = unit.vocab.map((_, i) => i);
+  const pending = all.filter(i => !unitProgress(unit).game.includes(i));
+  let queue = shuffle(pending.length ? pending : all);
+  let round = 0;
+  let combo = 0;
+  let locked = false;
+  let target = queue[0];
+
+  function setCombo(animate = false) {
+    $("combo").textContent = `🔥 Combo · 连击 ${combo}`;
+    $("combo").classList.remove("pop");
+    if (animate) {
+      void $("combo").offsetWidth;
+      $("combo").classList.add("pop");
+    }
+  }
+
+  function displayRound() {
+    locked = false;
+    target = queue[round];
+    $("clue").hidden = true;
+    $("game-clue").setAttribute("aria-expanded", "false");
+    $("clue").textContent = unit.vocab[target][0];
+    $("game-next").hidden = true;
+    $("game-status").textContent = `Word ${round + 1}/${queue.length} · 第 ${round + 1} 题`;
+    $("choices").replaceChildren();
+    const options = shuffle([target, ...shuffle(all.filter(i => i !== target)).slice(0, 3)]);
+    for (const index of options) {
+      const [, en, zh, icon] = unit.vocab[index];
+      const choice = button(`${en} · ${zh}`, () => {
+        if (locked) return;
+        if (index !== target) {
+          combo = 0;
+          setCombo();
+          choice.classList.remove("shake");
+          void choice.offsetWidth;
+          choice.classList.add("shake");
+          $("game-status").textContent = "🐾 Try one more time. You can listen again! · 再试一次，可以重新听哦！";
+          return;
+        }
+        locked = true;
+        combo++;
+        setCombo(true);
+        const star = earn("game", target, unit);
+        choice.classList.add("correct", "pop");
+        const done = round === queue.length - 1;
+        $("game-status").textContent = done ?
+          `🐶 ¡Muy bien! Round complete. · 这一轮完成啦！${star ? " ⭐ +1" : ""}` :
+          `🐶 ¡Guau! You got it! · 你答对啦！${star ? " ⭐ +1" : ""}`;
+        for (const option of $("choices").children) option.disabled = true;
+        $("game-next").textContent = done ? "Play again · 再玩一轮" : "Next word · 下一个词 →";
+        $("game-next").hidden = false;
+        $("game-next").focus();
+      });
+      const picture = document.createElement("span");
+      picture.className = "icon";
+      picture.setAttribute("aria-hidden", "true");
+      picture.textContent = icon;
+      choice.prepend(picture);
+      $("choices").append(choice);
+    }
+  }
+
+  $("game-listen").onclick = () => {
+    if (!speak(unit.vocab[target][0])) {
+      $("clue").hidden = false;
+      $("game-clue").setAttribute("aria-expanded", "true");
+    }
+  };
+  $("game-clue").onclick = () => {
+    $("clue").hidden = !$("clue").hidden;
+    $("game-clue").setAttribute("aria-expanded", String(!$("clue").hidden));
+  };
+  $("game-next").onclick = () => {
+    stopSpeech();
+    if (round === queue.length - 1) {
+      queue = shuffle(all);
+      round = 0;
+      combo = 0;
+      setCombo();
+    } else {
+      round++;
+    }
+    displayRound();
+    $("game-listen").focus();
+  };
+  displayRound();
+}
+
+// Step 3: tile identity is independent of its text, so repeated tiles work.
+function sentenceBuilder(unit) {
+  let index = unit.questions.findIndex((_, i) => !unitProgress(unit).builder.includes(i));
+  if (index < 0) index = 0;
+  lesson.innerHTML = `
+    <h2 id="activity-title" tabindex="-1">🧩 Sentence builder · 词块造句</h2>
+    <p>Tap tiles in order. Tap a placed tile to undo it. · 按顺序点击词块，点击已放入的词块可以撤回。</p>
+    <p id="builder-target"><strong></strong><br><span lang="zh-Hans"></span></p>
+    <div id="tray" class="tray row" aria-label="Your sentence · 你的句子"></div>
+    <div id="bank" class="bank row" aria-label="Available tiles · 可用词块"></div>
+    <div class="row">
+      <button type="button" id="check" class="primary">Check · 检查句子</button>
+      <button type="button" id="clear-tiles">Clear · 清空词块</button>
+      <button type="button" id="say-sentence" hidden>🔊 Hear the sentence · 听完整句</button>
+      <button type="button" id="builder-next" hidden>Next sentence · 下一句 →</button>
+    </div>
+    <p class="feedback" id="builder-status" role="status"></p>`;
+  let tiles;
+  let selected;
+  let solved;
+
+  function paintTiles() {
+    $("tray").replaceChildren();
+    $("bank").replaceChildren();
+    if (!selected.length) $("tray").textContent = "Your tiles go here · 把词块放到这里";
+    function tileButton(tile, placed) {
+      const control = button(tile.text, () => {
+        selected = placed ? selected.filter(item => item !== tile) : [...selected, tile];
+        $("builder-status").textContent = "";
+        paintTiles();
+        const target = placed ? $("bank") : $("tray");
+        [...target.children].find(item => item.dataset.tile === String(tile.id))?.focus();
+      });
+      control.lang = "es";
+      control.dataset.tile = tile.id;
+      control.disabled = solved;
+      if (placed && !solved) control.setAttribute("aria-label", `${tile.text} · Remove tile · 撤回词块`);
+      return control;
+    }
+    for (const tile of selected) $("tray").append(tileButton(tile, true));
+    for (const tile of tiles.filter(item => !selected.includes(item))) $("bank").append(tileButton(tile, false));
+    $("check").disabled = !selected.length || solved;
+    $("clear-tiles").disabled = !selected.length || solved;
+  }
+
+  function displayQuestion() {
+    const question = unit.questions[index];
+    const target = $("builder-target");
+    target.querySelector("strong").textContent = `${index + 1}/${unit.questions.length} · ${question.en}`;
+    target.querySelector("span").textContent = question.zh;
+    const ordered = [...question.answer, ...question.extras].map((text, id) => ({ text, id }));
+    tiles = shuffle(ordered);
+    if (question.answer.every((_, i) => tiles[i].id === i)) tiles.push(tiles.shift());
+    selected = [];
+    solved = false;
+    $("builder-status").textContent = "";
+    $("builder-next").hidden = true;
+    $("say-sentence").hidden = true;
+    paintTiles();
+  }
+
+  $("check").onclick = () => {
+    const { answer, tip } = unit.questions[index];
+    solved = selected.length === answer.length && selected.every((tile, i) => tile.text === answer[i]);
+    if (!solved) {
+      $("builder-status").textContent = `🐾 Try moving a tile. · 试着调整词块。 ${tip}`;
+      return;
+    }
+    const star = earn("builder", index, unit);
+    $("builder-status").textContent = `🐶 ¡Perfecto! · 拼对啦！${star ? " ⭐ +1" : ""} ${tip}`;
+    $("say-sentence").hidden = false;
+    $("builder-next").hidden = false;
+    $("builder-next").textContent = index === unit.questions.length - 1 ?
+      "Back to first sentence · 回到第一句" : "Next sentence · 下一句 →";
+    paintTiles();
+    $("say-sentence").focus();
+  };
+  $("clear-tiles").onclick = () => {
+    selected = [];
+    $("builder-status").textContent = "";
+    paintTiles();
+    $("bank").firstElementChild?.focus();
+  };
+  $("say-sentence").onclick = () => speak(unit.questions[index].answer.join(" "));
+  $("builder-next").onclick = () => {
+    stopSpeech();
+    index = (index + 1) % unit.questions.length;
+    displayQuestion();
+    $("bank").firstElementChild?.focus();
+  };
+  displayQuestion();
+}
+
+// Accept direct video sources and convert supported provider links to embeds.
+// An iframe snippet can also be pasted. Only its src is used.
+function parseMedia(value) {
+  let source = value.trim();
+  if (!source) return null;
+  if (source.startsWith("<")) {
+    const doc = new DOMParser().parseFromString(source, "text/html");
+    source = doc.querySelector("iframe[src]")?.getAttribute("src")?.trim() || "";
+    if (!source) throw new Error("missing source");
+  }
+  if (/^javascript:|^data:/i.test(source)) throw new Error("invalid source");
+  const url = new URL(source, document.baseURI);
+  if (!["https:", "http:", "file:"].includes(url.protocol)) throw new Error("invalid protocol");
+  if (url.protocol === "file:" && /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(source)) throw new Error("use relative path");
+  const host = url.hostname.toLowerCase();
+  const parts = url.pathname.split("/").filter(Boolean);
+  if (["youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be",
+       "youtube-nocookie.com", "www.youtube-nocookie.com"].includes(host)) {
+    const id = host === "youtu.be" ? parts[0] :
+      ["embed", "shorts", "live"].includes(parts[0]) ? parts[1] : url.searchParams.get("v");
+    if (!/^[\w-]{11}$/.test(id || "")) throw new Error("invalid YouTube video");
+    return { kind: "embed", src: `https://www.youtube-nocookie.com/embed/${id}` };
+  }
+  if (["vimeo.com", "www.vimeo.com", "player.vimeo.com"].includes(host)) {
+    const id = parts[0] === "video" ? parts[1] : parts[0];
+    if (!/^\d+$/.test(id || "")) throw new Error("invalid Vimeo video");
+    const hash = url.searchParams.get("h") || (parts[0] === "video" ? "" : parts[1]);
+    return { kind: "embed", src: `https://player.vimeo.com/video/${id}${hash ? `?h=${encodeURIComponent(hash)}` : ""}` };
+  }
+  if (parts.includes("embed") && url.protocol === "https:") return { kind: "embed", src: url.href };
+  return { kind: "video", src: url.href };
+}
+
+// The default demo and all lyrics work without loading any remote media.
+function songs(unit) {
+  lesson.innerHTML = `
+    <h2 id="activity-title" tabindex="-1">🎵 Songs & videos · 影音剧场</h2>
+    <h3 id="song-title"></h3>
+    <div class="demo" id="demo">🐶 <strong>Clap and echo! · 拍手跟读！</strong><br>
+      Tap a line below, listen, then say it with Pipo. · 点击下方歌词，听完跟皮波念一遍。</div>
+    <div class="video-frame" id="song-player" hidden></div>
+    <div class="row source">
+      <label for="media-source">Video source · 视频来源</label>
+      <input type="text" id="media-source" placeholder="./videos/hola.mp4" autocomplete="off" spellcheck="false">
+      <button type="button" id="load-video" class="primary">Load video · 加载</button>
+      <button type="button" id="demo-video">Back to chant · 返回歌谣</button>
+    </div>
+    <small>Use a relative file path, a direct video URL, or an embed link. · 可填相对文件路径、视频直链或嵌入链接。</small>
+    <p class="feedback" id="media-status" role="status"></p>
+    <ol class="lyrics" id="lyrics"></ol>`;
+  const player = $("song-player");
+  const demo = $("demo");
+  const input = $("media-source");
+  $("song-title").textContent = unit.song.title;
+  input.value = unit.song.source;
+
+  function showDemo() {
+    player.replaceChildren();
+    player.hidden = true;
+    demo.hidden = false;
+    $("media-status").textContent = "";
+  }
+
+  function loadVideo() {
+    showDemo();
+    let media;
+    try { media = parseMedia(input.value); }
+    catch {
+      $("media-status").textContent = "Try a video file path or a supported embed link. · 请试试视频文件路径或可用的嵌入链接。";
+      return;
+    }
+    if (!media) return;
+    const element = document.createElement(media.kind === "video" ? "video" : "iframe");
+    if (media.kind === "video") {
+      element.controls = true;
+      element.playsInline = true;
+      element.preload = "metadata";
+      element.onerror = () => {
+        if (!element.isConnected) return;
+        showDemo();
+        $("media-status").textContent = "The video couldn’t open. Check the path or try another file. · 视频暂无法打开，请检查路径或换一个文件。";
+      };
+    } else {
+      element.title = unit.song.title;
+      element.allowFullscreen = true;
+      element.referrerPolicy = "strict-origin-when-cross-origin";
+      element.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation");
+      $("media-status").textContent = "Online players need internet and embedding permission. · 在线播放器需要联网，并且视频需允许嵌入。";
+    }
+    player.append(element);
+    player.hidden = false;
+    demo.hidden = true;
+    element.src = media.src;
+  }
+
+  $("load-video").onclick = loadVideo;
+  input.onkeydown = event => { if (event.key === "Enter") loadVideo(); };
+  $("demo-video").onclick = showDemo;
+  for (const [index, [es, en, zh]] of unit.song.lines.entries()) {
+    const item = document.createElement("li");
+    const line = button("", () => speak(es, () => {
+      if (earn("listened", index, unit) && item.isConnected) {
+        $("media-status").textContent = "⭐ +1 Echo star · 跟读星星 +1";
+      }
+    }));
+    const lyric = document.createElement("span");
+    lyric.lang = "es";
+    lyric.textContent = es;
+    const translation = document.createElement("small");
+    translation.textContent = `${en} · ${zh}`;
+    line.append("🔊 ", lyric, translation);
+    item.append(line);
+    $("lyrics").append(item);
+  }
+  if (input.value) loadVideo();
+}
+
+// The studio stores titles and dates only. Videos stay in memory until
+// downloaded, replaced, or the page closes. Each object URL is revoked
+// when its owning clip or playback view is discarded.
+let latestRecording = null;
+
+function videoStudio(unit) {
+  lesson.innerHTML = `
+    <h2 id="activity-title" tabindex="-1">🎬 My Spanish Video Studio · 我的西语小剧场</h2>
+    <p id="studio-script" class="demo" lang="es"></p>
+    <label class="studio-label" for="clip-title">Challenge title · 挑战标题</label>
+    <input type="text" id="clip-title" maxlength="100">
+    <div class="video-frame" id="camera-frame" hidden>
+      <video id="camera" autoplay muted playsinline aria-label="Camera preview · 摄像头预览"></video>
+    </div>
+    <div class="row source">
+      <button type="button" id="open-camera">Open camera · 开启摄像头</button>
+      <button type="button" id="record" class="primary" disabled>🔴 Record · 开始录制</button>
+      <button type="button" id="stop-record" disabled>■ Stop · 停止录制</button>
+      <button type="button" id="close-camera" disabled>Close camera · 关闭摄像头</button>
+    </div>
+    <p class="feedback" id="studio-status" role="status"></p>
+    <div class="upload" id="drop">
+      <label for="local-video">Choose or drop a video here to watch it. · 选择或拖入已录视频回看。</label>
+      <input type="file" accept="video/*" id="local-video">
+    </div>
+    <div class="video-frame" id="playback-frame" hidden>
+      <p id="playback-title"></p>
+      <video id="playback" controls playsinline aria-label="Video playback · 视频回放"></video>
+    </div>
+    <div class="row">
+      <button id="replay-latest" type="button" hidden>Watch latest recording · 回看最新录制</button>
+      <a class="download" id="download" hidden>⬇ Download recording · 下载录好的视频</a>
+    </div>
+    <details open>
+      <summary id="recording-count"></summary>
+      <ol id="recordings"></ol>
+    </details>`;
+
+  $("studio-script").textContent = unit.script;
+  $("clip-title").value = unit.challenge;
+  const preview = $("camera");
+  const playback = $("playback");
+  const status = $("studio-status");
+  const recordButton = $("record");
+  const stopButton = $("stop-record");
+  const openButton = $("open-camera");
+  const closeButton = $("close-camera");
+  const download = $("download");
+  let alive = true;
+  let opening = false;
+  let stream = null;
+  let recorder = null;
+  let localUrl = "";
+  let finalizing = false;
+
+  function controls() {
+    openButton.disabled = Boolean(opening || stream || finalizing);
+    recordButton.disabled = !stream || Boolean(recorder) || finalizing;
+    stopButton.disabled = recorder?.state !== "recording";
+    closeButton.disabled = !stream || Boolean(recorder) || finalizing;
+    $("clip-title").disabled = Boolean(recorder) || finalizing;
+  }
+
+  function closeCamera() {
+    stream?.getTracks().forEach(track => track.stop());
+    stream = null;
+    preview.srcObject = null;
+    $("camera-frame").hidden = true;
+    controls();
+  }
+
+  function showClip(url, title) {
+    playback.src = url;
+    $("playback-title").textContent = title;
+    $("playback-frame").hidden = false;
+  }
+
+  function clearLocalUrl() {
+    if (!localUrl) return;
+    URL.revokeObjectURL(localUrl);
+    localUrl = "";
+  }
+
+  function latestClip(playNow = false) {
+    if (!latestRecording) return;
+    download.href = latestRecording.url;
+    download.download = latestRecording.filename;
+    download.hidden = false;
+    $("replay-latest").hidden = false;
+    if (playNow) {
+      showClip(latestRecording.url, latestRecording.title);
+      clearLocalUrl();
+    }
+  }
+
+  function renderRecordings() {
+    $("recording-count").textContent = `🎥 ${passport.recordings.length} recordings · 已拍摄打卡`;
+    const list = $("recordings");
+    list.replaceChildren();
+    for (const entry of [...passport.recordings].reverse()) {
+      const item = document.createElement("li");
+      const day = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(entry.date));
+      item.textContent = `${entry.title} · ${day}`;
+      list.append(item);
+    }
+  }
+
+  openButton.onclick = async () => {
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+      status.textContent = "Camera recording isn’t available here. Pick or drop a saved clip below. · 当前环境无法录制，可在下方选择或拖入已保存的视频。";
+      return;
+    }
+    opening = true;
+    controls();
+    status.textContent = "Waiting for camera permission… · 等待摄像头和麦克风授权……";
+    try {
+      const media = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      if (!alive) {
+        media.getTracks().forEach(track => track.stop());
+        return;
+      }
+      stream = media;
+      preview.srcObject = media;
+      $("camera-frame").hidden = false;
+      preview.play().catch(() => {});
+      status.textContent = "Camera is ready! · 摄像头准备好啦！";
+    } catch {
+      if (alive) status.textContent =
+        "Camera or microphone unavailable. Check browser permissions or pick a saved clip below. · 摄像头或麦克风暂不可用，可检查浏览器权限，或在下方选择已录视频。";
+    } finally {
+      opening = false;
+      if (alive) controls();
+    }
+  };
+
+  closeButton.onclick = () => {
+    closeCamera();
+    status.textContent = "Camera closed. · 摄像头已关闭。";
+  };
+
+  recordButton.onclick = () => {
+    if (!stream || recorder || finalizing) return;
+    const title = $("clip-title").value.trim() || unit.challenge;
+    const chunks = [];
+    let failed = false;
+    try {
+      const formats = ["video/webm;codecs=vp8,opus", "video/webm", "video/mp4"];
+      const format = formats.find(type => MediaRecorder.isTypeSupported?.(type));
+      const active = format ? new MediaRecorder(stream, { mimeType: format }) : new MediaRecorder(stream);
+      recorder = active;
+      active.ondataavailable = event => {
+        if (alive && event.data.size) chunks.push(event.data);
+      };
+      active.onerror = () => {
+        failed = true;
+        if (!alive) return;
+        recorder = null;
+        finalizing = false;
+        closeCamera();
+        status.textContent = "Recording paused by the browser. Open the camera to try again. · 浏览器中断了录制，可以重新开启摄像头再试。";
+      };
+      active.onstop = () => {
+        if (!alive || failed) return;
+        recorder = null;
+        finalizing = false;
+        closeCamera();
+        const type = active.mimeType || chunks[0]?.type || "";
+        const clip = new Blob(chunks, { type });
+        if (!clip.size) {
+          status.textContent = "No video was captured. Try recording a little longer. · 这次没有录到视频，可以试着多录几秒。";
+          return;
+        }
+        const previous = latestRecording;
+        const extension = type.includes("mp4") ? "mp4" : type.includes("ogg") ? "ogv" : "webm";
+        latestRecording = {
+          title,
+          url: URL.createObjectURL(clip),
+          filename: `${title.replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_")}.${extension}`
+        };
+        latestClip(true);
+        if (previous) URL.revokeObjectURL(previous.url);
+        passport.recordings.push({ title, unit: unit.id, date: new Date().toISOString() });
+        save();
+        renderRecordings();
+        status.textContent = "⭐ +1 Recorded! Watch it now or download it to keep. · 录好啦！现在就能回看，下载后可长期保存。";
+        playback.play().catch(() => {});
+      };
+      active.start();
+      controls();
+      status.textContent = "🔴 Recording… Say your Spanish lines! · 正在录制，来说西语吧！";
+    } catch {
+      recorder = null;
+      controls();
+      status.textContent = "Recording couldn’t start. You can still open a saved clip below. · 暂时无法开始录制，可以在下方打开已保存的视频。";
+    }
+  };
+
+  stopButton.onclick = () => {
+    if (recorder?.state !== "recording") return;
+    finalizing = true;
+    recorder.stop();
+    controls();
+    status.textContent = "Preparing your video… · 正在准备回放……";
+  };
+
+  function playFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith("video/") && !/\.(mp4|webm|mov|m4v|ogv|ogg|mkv|avi|mpeg)$/i.test(file.name)) {
+      status.textContent = "Choose a video file. · 请选择一个视频文件。";
+      return;
+    }
+    const previous = localUrl;
+    localUrl = URL.createObjectURL(file);
+    showClip(localUrl, file.name);
+    if (previous) URL.revokeObjectURL(previous);
+    status.textContent = "Your clip is ready to play. · 可以回看你的视频啦。";
+    playback.play().catch(() => {});
+  }
+
+  playback.onerror = () => {
+    if (alive) status.textContent = "This browser couldn’t play the clip. Try an MP4 or WebM video. · 此浏览器无法播放该视频，可试试 MP4 或 WebM。";
+  };
+  $("local-video").onchange = event => {
+    playFile(event.target.files[0]);
+    event.target.value = "";
+  };
+  const drop = $("drop");
+  drop.ondragover = event => { event.preventDefault(); drop.classList.add("drag"); };
+  drop.ondragleave = () => drop.classList.remove("drag");
+  drop.ondrop = event => {
+    event.preventDefault();
+    drop.classList.remove("drag");
+    playFile(event.dataTransfer.files[0]);
+  };
+  $("replay-latest").onclick = () => {
+    latestClip(true);
+    playback.play().catch(() => {});
+  };
+  const endWithNotice = () => {
+    if (recorder || finalizing) return "The camera is recording. · 摄像头正在录制。";
+    return "";
+  };
+  studioBusy = endWithNotice;
+  latestClip(Boolean(latestRecording));
+  controls();
+  renderRecordings();
+
+  disposePanel = () => {
+    alive = false;
+    studioBusy = () => "";
+    if (recorder?.state === "recording") recorder.stop();
+    closeCamera();
+    playback.pause();
+    playback.removeAttribute("src");
+    playback.load();
+    clearLocalUrl();
+  };
+}
+
+// Finish an active recording before leaving the studio through the app.
+let studioBusy = () => "";
+
+function canNavigate() {
+  if (!studioBusy()) return true;
+  $("studio-status").textContent =
+    "Press Stop and wait for your video to appear before switching. · 请先点「停止录制」，等视频出现后再切换。";
+  return false;
+}
+
+for (const unit of units) {
+  const control = button(`${unit.icon} ${unit.en}`, () => {
+    if (unit === currentUnit || !canNavigate()) return;
+    currentUnit = unit;
+    show("cards");
+  });
+  control.dataset.unit = unit.id;
+  const check = document.createElement("span");
+  check.className = "unit-check";
+  const subtitle = document.createElement("small");
+  subtitle.lang = "zh-Hans";
+  subtitle.textContent = unit.zh;
+  control.append(check, subtitle);
+  $("units").append(control);
+}
+
+for (const [id, en, zh] of steps) {
+  const control = button(en, () => {
+    if (id !== currentStep && canNavigate()) show(id);
+  });
+  control.dataset.step = id;
+  const check = document.createElement("span");
+  check.className = "step-check";
+  const subtitle = document.createElement("small");
+  subtitle.lang = "zh-Hans";
+  subtitle.textContent = zh;
+  control.append(check, subtitle);
+  $("steps").append(control);
+}
+
+$("voice").onchange = () => {
+  passport.voice = $("voice").value;
+  save();
+};
+$("speed").onclick = () => {
+  passport.slow = !passport.slow;
+  syncSpeed();
+  save();
+};
+$("reset").onclick = () => {
+  if (!canNavigate()) return;
+  if (!window.confirm("Reset stars, badges, learning progress and recording check-ins?\n清空星星、徽章、学习进度和拍摄打卡吗？")) return;
+  const previous = latestRecording;
+  latestRecording = null;
+  passport = freshPassport();
+  syncSpeed();
+  updateVoices();
+  show(currentStep, false);
+  if (previous) URL.revokeObjectURL(previous.url);
+  save();
+  if (storageAvailable) $("passport-status").textContent = "Passport reset. · 探险护照已重置。";
+};
+
+window.addEventListener("pagehide", event => {
+  stopSpeech();
+  disposePanel();
+  disposePanel = () => {};
+  if (!event.persisted && latestRecording) URL.revokeObjectURL(latestRecording.url);
+});
+window.addEventListener("pageshow", event => {
+  if (event.persisted) show(currentStep, false);
+});
+synth?.addEventListener("voiceschanged", updateVoices);
+updateVoices();
+syncSpeed();
+renderPassport();
+show("cards", false);
+</script>
+</body>
+</html>
+```
